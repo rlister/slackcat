@@ -9,7 +9,7 @@ Log in to your slack.com account and get your API token from
 https://api.slack.com/.
 
     gem install slackcat
-    export SLACKCAT_TOKEN=<your api token>
+    export SLACK_TOKEN=<your api token>
     echo 'hello world' | slackcat -c <channel>
 
 ## Usage
@@ -19,8 +19,8 @@ list filenames as arguments. Multiple files will be concatenated.
 
 Environment variables:
 
-* `SLACKCAT_TOKEN`: your token from https://api.slack.com/.
-* `SLACKCAT_CHANNELS`: default comma-separated list of channel names
+* `SLACK_TOKEN`: your token from https://api.slack.com/.
+* `SLACK_CHANNELS`: default comma-separated list of channel names
   to share files
 
 Command-line options:
