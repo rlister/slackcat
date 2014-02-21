@@ -38,7 +38,7 @@ Command-line options:
 File uploads to slack are private by default. If you list channels,
 content will be shared to them.
 
-## Example usage from 
+## Example usage from vim
 
 Upload contents of buffer:
 
