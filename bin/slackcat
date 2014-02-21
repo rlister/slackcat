@@ -32,9 +32,12 @@ opts = Trollop::options do
   opt :channels,        'Channels to share into', type: :string, short: 'c', default: ENV.fetch('SLACK_CHANNELS', nil)
   opt :filetype,        'File type identifier',   type: :string, short: 't'
   opt :title,           'Title of file',          type: :string, short: 'T'
-  opt :filename,        'Filename of file',       type: :string, short: 'n', default: ARGV.first
+  opt :filename,        'Filename of file',       type: :string, short: 'n'
   opt :initial_comment, 'Initial comment to add', type: :string, short: 'i'
 end
+
+## get this after opts parsed out of ARGV
+opts[:filename] ||= ARGV.first
 
 raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
 slack = Slackcat.new(opts[:token])
