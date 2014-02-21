@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+require 'httparty'
+require 'trollop'
+
+class Slackcat
+  include HTTParty
+  base_uri 'https://slack.com/api'
+  
+  def initialize(token)
+    @token = token
+  end
+  
+  def channels
+    self.class.get('/channels.list', query: { token: @token }).tap do |response|
+      raise "error retrieving channel list: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end
+  end
+  
+  def upload(params)
+    self.class.post('/files.upload', body: params.merge({token: @token})).tap do |response|
+      raise "error uploading file: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end
+  end
+  
+end
+
+opts = Trollop::options do
+  opt :token,           'Slack API token',        type: :string, short: 'k', default: ENV.fetch('SLACK_TOKEN', nil)
+  opt :channels,        'Channels to share into', type: :string, short: 'c', default: ENV.fetch('SLACK_CHANNELS', nil)
+  opt :filetype,        'File type identifier',   type: :string, short: 't'
+  opt :title,           'Title of file',          type: :string, short: 'T'
+  opt :filename,        'Filename of file',       type: :string, short: 'n'
+  opt :initial_comment, 'Initial comment to add', type: :string, short: 'i'
+end
+
+raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
+slack = Slackcat.new(opts[:token])
+
+## get channel IDs
+channels = if opts[:channels]
+  names = opts[:channels].gsub(/\#/, '').split(/[\s,]+/)   # array of names with no #
+  slack.channels['channels'].inject({}) do |hash, channel| # get channel list
+    hash[channel['name']] = channel['id']; hash            # index by name
+  end.values_at(*names).join(',')                          # list of ids matching given names
+end
+
+params = {
+  content:         ARGF.read,
+  filetype:        opts[:filetype],
+  filename:        opts[:filename],
+  title:           opts[:title],
+  initial_comment: opts[:initial_comment],
+  channels:        channels,
+}.select { |_, value| value }
+
+slack.upload(params)
