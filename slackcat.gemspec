@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Slackcat::VERSION
   spec.authors       = ["Richard Lister"]
   spec.email         = ["rlister@gmail.com"]
-  spec.description   = %q{Upload a file to slack}
+  spec.description   = %q{Upload a file to Slack chat}
   spec.summary       = %q{Upload a file to slack}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/rlister/slackcat"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
