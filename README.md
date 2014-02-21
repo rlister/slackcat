@@ -8,7 +8,7 @@ command-line.
 Log in to your slack.com account and get your API token from
 https://api.slack.com/.
 
-    gem install'slackcat
+    gem install slackcat
     export SLACKCAT_TOKEN=<your api token>
     echo 'hello world' | slackcat -c <channel>
 
