@@ -37,3 +37,27 @@ Command-line options:
 
 File uploads to slack are private by default. If you list channels,
 content will be shared to them.
+
+## Example usage from 
+
+Upload contents of buffer:
+
+`:%! slackcat`
+
+## Example usage from emacs
+
+Upload contents of region:
+
+`M-| slackcat`
+
+To make a named function:
+
+```lisp
+(setenv "SLACK_TOKEN" "<your api token>")
+(setenv "SLACK_CHANNELS" "<channel list")
+
+(defun slackcat (&optional b e)
+  "Upload contents of region to slack chat."
+  (interactive "r")
+  (shell-command-on-region b e "slackcat"))
+```
