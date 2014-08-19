@@ -17,6 +17,12 @@ class Slackcat
     end
   end
   
+  def groups
+    self.class.get('/groups.list', query: { token: @token }).tap do |response|
+      raise "error retrieving group list: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end
+  end
+  
   def upload(params)
     self.class.post('/files.upload', body: params.merge({token: @token})).tap do |response|
       raise "error uploading file: #{response.fetch('error', 'unknown error')}" unless response['ok']
@@ -28,6 +34,7 @@ end
 opts = Trollop::options do
   opt :token,           'Slack API token',        type: :string, short: 'k', default: ENV.fetch('SLACK_TOKEN', nil)
   opt :channels,        'Channels to share into', type: :string, short: 'c', default: ENV.fetch('SLACK_CHANNELS', nil)
+  opt :groups,          'Groups to share into',   type: :string, short: 'g', default: ENV.fetch('SLACK_GROUPS', nil)
   opt :filetype,        'File type identifier',   type: :string, short: 't'
   opt :title,           'Title of file',          type: :string, short: 'T'
   opt :filename,        'Filename of file',       type: :string, short: 'n'
@@ -45,8 +52,20 @@ channels = if opts[:channels]
   names = opts[:channels].gsub(/\#/, '').split(/[\s,]+/)   # array of names with no #
   slack.channels['channels'].inject({}) do |hash, channel| # get channel list
     hash[channel['name']] = channel['id']; hash            # index by name
-  end.values_at(*names).join(',')                          # list of ids matching given names
+  end.values_at(*names)                                    # list of ids matching given names
 end
+
+## get group IDs
+groups = if opts[:groups]
+  names = opts[:groups].gsub(/\#/, '').split(/[\s,]+/)     # array of names with no #, probably not an issue for groups, but whatever.
+  slack.groups['groups'].inject({}) do |hash, group |      # get channel list
+    hash[group['name']] = group['id']; hash                # index by name
+  end.values_at(*names)                                    # list of ids matching given names
+end
+
+ids = []
+ids.concat(channels) if channels
+ids.concat(groups) if groups
 
 params = {
   content:         ARGF.read,
@@ -54,7 +73,7 @@ params = {
   filename:        opts[:filename],
   title:           opts[:title],
   initial_comment: opts[:initial_comment],
-  channels:        channels,
+  channels:        ids.join(","),
 }.select { |_, value| value }
 
 slack.upload(params)
