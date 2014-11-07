@@ -20,15 +20,14 @@ list filenames as arguments. Multiple files will be concatenated.
 Environment variables:
 
 * `SLACK_TOKEN`: your token from https://api.slack.com/.
-* `SLACK_CHANNELS`: default comma-separated list of channel names to share files
-* `SLACK_GROUPS`: default comma-separated list of private groups to share files
 
 Command-line options:
 
 ```
             --token, -k:   Slack API token
-         --channels, -c:   Channels to share into
-           --groups, -g:   Private groups to share into
+         --channels, -c:   Channels to share
+           --groups, -g:   Private groups to share
+            --users, -u:   Users (DMs) to share
          --filetype, -t:   File type identifier
             --title, -T:   Title of file
          --filename, -n:   Filename of file
