@@ -55,6 +55,13 @@ class Slackcat
     end
   end
 
+  ## send message to one channel as a single post, instead of file upload
+  def post_message(params)
+    self.class.post('/chat.postMessage', body: params.merge({token: @token})).tap do |response|
+      raise "error posting message: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end
+  end
+
 end
 
 opts = Trollop::options do
