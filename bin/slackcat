@@ -49,6 +49,7 @@ class Slackcat
     end
   end
 
+  ## upload a file or text snippet
   def upload(params)
     self.class.post('/files.upload', body: params.merge({token: @token})).tap do |response|
       raise "error uploading file: #{response.fetch('error', 'unknown error')}" unless response['ok']
