@@ -11,15 +11,36 @@ class Slackcat
     @token = token
   end
 
+  ## get a channel, group, im or user list
+  def get_objects(method, key)
+    self.class.get("/#{method}", query: { token: @token }).tap do |response|
+      raise "error retrieving #{thing} list: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end.fetch(key)
+  end
+
   def channels
-    self.class.get('/channels.list', query: { token: @token }).tap do |response|
-      raise "error retrieving channel list: #{response.fetch('error', 'unknown error')}" unless response['ok']
-    end
+    @channels ||= get_objects('channels.list', 'channels')
   end
 
   def groups
-    self.class.get('/groups.list', query: { token: @token }).tap do |response|
-      raise "error retrieving group list: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    @groups ||= get_objects('groups.list', 'groups')
+  end
+
+  def ims
+    @ims ||= get_objects('im.list', 'ims')
+  end
+
+  def users
+    @users ||= get_objects('users.list', 'members')
+  end
+
+  ## translate a username into an IM id
+  def im_for_user(username)
+    user = users.find do |user|
+      user['name'] == username
+    end
+    ims.find do |im|
+      im['user'] == user['id']
     end
   end
 
