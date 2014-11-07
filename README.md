@@ -42,22 +42,25 @@ content will be shared to them.
 
 Upload contents of buffer:
 
-`:%! slackcat`
+`:%! slackcat -c dev`
 
 ## Example usage from emacs
 
 Upload contents of region:
 
-`M-| slackcat`
+`M-| slackcat -c dev`
 
 To make a named function:
 
 ```lisp
 (setenv "SLACK_TOKEN" "<your api token>")
-(setenv "SLACK_CHANNELS" "<channel list")
+
+(defvar slackcat-bin  "slackcat" "Command to invoke slackcat.")
+(defvar slackcat-args "-c dev"   "Default arguments to pass to slackcat.")
 
 (defun slackcat (&optional b e)
   "Upload contents of region to slack chat."
   (interactive "r")
-  (shell-command-on-region b e "slackcat"))
+  (let ((args (read-from-minibuffer "slackcat args: " slackcat-args)))
+    (shell-command-on-region b e (format "%s %s" slackcat-bin args))))
 ```
