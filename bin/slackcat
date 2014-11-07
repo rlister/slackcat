@@ -69,25 +69,17 @@ opts[:filename] ||= ARGV.first
 raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
 slack = Slackcat.new(opts[:token])
 
-## get channel IDs
-channels = if opts[:channels]
-  names = opts[:channels].gsub(/\#/, '').split(/[\s,]+/)   # array of names with no #
-  slack.channels['channels'].inject({}) do |hash, channel| # get channel list
-    hash[channel['name']] = channel['id']; hash            # index by name
-  end.values_at(*names)                                    # list of ids matching given names
+channels = opts[:channels].split(/[\s,]+/).map do |name|
+  slack.channels.find { |channel| channel['name'] == name }.fetch('id')
 end
 
-## get group IDs
-groups = if opts[:groups]
-  names = opts[:groups].gsub(/\#/, '').split(/[\s,]+/)     # array of names with no #, probably not an issue for groups, but whatever.
-  slack.groups['groups'].inject({}) do |hash, group |      # get channel list
-    hash[group['name']] = group['id']; hash                # index by name
-  end.values_at(*names)                                    # list of ids matching given names
+groups = opts[:groups].split(/[\s,]+/).map do |name|
+  slack.groups.find { |group| group['name'] == name }.fetch('id')
 end
 
-ids = []
-ids.concat(channels) if channels
-ids.concat(groups) if groups
+ims = opts[:users].split(/[\s,]+/).map do |name|
+  slack.im_for_user(name).fetch('id')
+end
 
 params = {
   content:         ARGF.read,
@@ -95,7 +87,7 @@ params = {
   filename:        opts[:filename],
   title:           opts[:title],
   initial_comment: opts[:initial_comment],
-  channels:        ids.join(","),
+  channels:        (channels + groups + ims).join(","),
 }.select { |_, value| value }
 
 slack.upload(params)
