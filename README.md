@@ -58,7 +58,7 @@ option, which will cause each file to be uploaded separately.
 Example:
 
 ```sh
-slackcat -c general kitten.jpg cat.gif
+slackcat -c general -m kitten.jpg cat.gif
 ```
 
 Slack does a good job of setting filetype correctly from mimetype,
