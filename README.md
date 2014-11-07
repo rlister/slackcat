@@ -79,7 +79,8 @@ slackcat -u buddy -p foo.txt bar.txt
 ```
 
 Due to a limitation of the slack api, your user icon will not be set,
-and your username will appear as `username (bot)`.
+and your username will appear as `username (bot)`. You may also pass
+only one channel, group or username.
 
 ## Example usage from vim
 
