@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'httparty'
+require 'httmultiparty'
 require 'trollop'
 
 class Slackcat
-  include HTTParty
+  include HTTMultiParty
   base_uri 'https://slack.com/api'
 
   def initialize(token)
