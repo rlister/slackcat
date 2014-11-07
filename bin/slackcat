@@ -94,7 +94,6 @@ ims = opts[:users].split(/[\s,]+/).map do |name|
 end
 
 params = {
-  content:         ARGF.read,
   filetype:        opts[:filetype],
   filename:        opts[:filename],
   title:           opts[:title],
@@ -102,4 +101,12 @@ params = {
   channels:        (channels + groups + ims).join(","),
 }.select { |_, value| value }
 
-slack.upload(params)
+if opts[:post] #simple text post
+  slack.post_message(text: ARGF.read, channel: params[:channels], username: slack.auth)
+elsif opts[:multipart] #upload multiple individual binary files
+  ARGV.each do |arg|
+    slack.upload({file: File.new(arg), filename: arg}.merge(params))
+  end
+else #upload concatenated text snippet
+  slack.upload(params.merge(content: ARGF.read))
+end
