@@ -33,8 +33,9 @@ end
 
 opts = Trollop::options do
   opt :token,           'Slack API token',        type: :string, short: 'k', default: ENV.fetch('SLACK_TOKEN', nil)
-  opt :channels,        'Channels to share into', type: :string, short: 'c', default: ENV.fetch('SLACK_CHANNELS', nil)
-  opt :groups,          'Groups to share into',   type: :string, short: 'g', default: ENV.fetch('SLACK_GROUPS', nil)
+  opt :channels,        'Channels to share',      type: :string, short: 'c', default: ''
+  opt :groups,          'Groups to share',        type: :string, short: 'g', default: ''
+  opt :users,           'Users (DMs) to share',   type: :string, short: 'u', default: ''
   opt :filetype,        'File type identifier',   type: :string, short: 't'
   opt :title,           'Title of file',          type: :string, short: 'T'
   opt :filename,        'Filename of file',       type: :string, short: 'n'
