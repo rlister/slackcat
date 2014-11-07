@@ -34,6 +34,11 @@ class Slackcat
     @users ||= get_objects('users.list', 'members')
   end
 
+  ## get my username
+  def auth
+    @auth ||= get_objects('auth.test', 'user')
+  end
+
   ## translate a username into an IM id
   def im_for_user(username)
     user = users.find do |user|
