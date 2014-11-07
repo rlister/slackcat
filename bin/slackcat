@@ -66,18 +66,17 @@ class Slackcat
 end
 
 opts = Trollop::options do
-  opt :token,           'Slack API token',        type: :string, short: 'k', default: ENV.fetch('SLACK_TOKEN', nil)
-  opt :channels,        'Channels to share',      type: :string, short: 'c', default: ''
-  opt :groups,          'Groups to share',        type: :string, short: 'g', default: ''
-  opt :users,           'Users (DMs) to share',   type: :string, short: 'u', default: ''
-  opt :filetype,        'File type identifier',   type: :string, short: 't'
-  opt :title,           'Title of file',          type: :string, short: 'T'
-  opt :filename,        'Filename of file',       type: :string, short: 'n'
-  opt :initial_comment, 'Initial comment to add', type: :string, short: 'i'
+  opt :token,           'Slack API token',            type: :string,  short: 'k', default: ENV.fetch('SLACK_TOKEN', nil)
+  opt :channels,        'Channels to share',          type: :string,  short: 'c', default: ''
+  opt :groups,          'Groups to share',            type: :string,  short: 'g', default: ''
+  opt :users,           'Users (DMs) to share',       type: :string,  short: 'u', default: ''
+  opt :filetype,        'File type identifier',       type: :string,  short: 't'
+  opt :title,           'Title of file',              type: :string,  short: 'T'
+  opt :filename,        'Filename of file',           type: :string,  short: 'n'
+  opt :initial_comment, 'Initial comment to add',     type: :string,  short: 'i'
+  opt :post,            'Post instead of upload',     type: :boolean, short: 'p', default: false
+  opt :multipart,       'Multipart upload each file', type: :boolean, short: 'm', default: false
 end
-
-## get this after opts parsed out of ARGV
-opts[:filename] ||= ARGV.first
 
 raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
 slack = Slackcat.new(opts[:token])
