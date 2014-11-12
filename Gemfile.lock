@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    slackcat (0.1.0)
+    slackcat (0.2.2)
       httmultiparty
       trollop
 
