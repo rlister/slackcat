@@ -14,7 +14,7 @@ class Slackcat
   ## get a channel, group, im or user list
   def get_objects(method, key)
     self.class.get("/#{method}", query: { token: @token }).tap do |response|
-      raise "error retrieving #{thing} list: #{response.fetch('error', 'unknown error')}" unless response['ok']
+      raise "error retrieving #{key} from #{method}: #{response.fetch('error', 'unknown error')}" unless response['ok']
     end.fetch(key)
   end
 
