@@ -109,7 +109,7 @@ To make a named function:
     (shell-command-on-region b e (format "%s %s" slackcat-bin args))))
 ```
 
-Other Overrides:
+## Other Overrides:
 
 ```
 export SLACK_CHANNEL="general"
