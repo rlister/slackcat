@@ -17,6 +17,8 @@ echo 'hello world' | slackcat -c <channel>
 ## Environment variables
 
 * `SLACK_TOKEN`: your token from https://api.slack.com/.
+* `SLACK_CHANNEL`: default destination channel; will be used if
+  no `-c`, `-g` or `-u` option given
 
 ## Command-line options
 
@@ -64,7 +66,7 @@ slackcat -c general -m kitten.jpg cat.gif
 Slack does a good job of setting filetype correctly from mimetype,
 though you may override this with the `-t` option.
 
-This mode does not read stdin. 
+This mode does not read stdin.
 
 ## Post messages as chat text
 
@@ -108,11 +110,3 @@ To make a named function:
   (let ((args (read-from-minibuffer "slackcat args: " slackcat-args)))
     (shell-command-on-region b e (format "%s %s" slackcat-bin args))))
 ```
-
-## Other Overrides:
-
-```
-export SLACK_CHANNEL="general"
-```
-
-Default the channel so you don't have to type it constantly
