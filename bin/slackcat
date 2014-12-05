@@ -41,8 +41,8 @@ class Slackcat
 
   ## translate a username into an IM id
   def im_for_user(username)
-    user = users.find do |user|
-      user['name'] == username
+    user = users.find do |u|
+      u['name'] == username
     end
     ims.find do |im|
       im['user'] == user['id']
