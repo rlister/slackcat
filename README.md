@@ -14,6 +14,10 @@ export SLACK_TOKEN=<your api token>
 echo 'hello world' | slackcat -c <channel>
 ```
 
+Note: since gem dependencies build extension modules, you may need
+ruby headers installed. For example, using system ruby on debian
+derivatives, you need to install the `ruby-dev` package.
+
 ## Environment variables
 
 * `SLACK_TOKEN`: your token from https://api.slack.com/.
