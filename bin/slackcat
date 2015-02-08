@@ -64,7 +64,7 @@ class Slackcat
   end
 
   ## download a file posted by another user
-  def download(params)
+  def download(params, save_as)
     info = self.class.get('/files.info', query: params.merge({token: @token})).tap do |response|
       raise "error retrieving information for for file #{params[:file]}: #{response.fetch('error', 'unknown error')}" unless response['ok']
     end.fetch('file')
@@ -72,6 +72,14 @@ class Slackcat
     if download = info['url']
       uri  = URI(download)
       name = uri.path.split('/').last
+
+      if save_as
+        if File.directory?(save_as)
+          name = "#{save_as}/#{name}"
+        else
+          name = save_as
+        end
+      end
 
       File.open(name, 'wb') { |f| f.write HTTParty.get(download).parsed_response }
       return name
@@ -94,6 +102,7 @@ opts = Trollop::options do
   opt :post,            'Post instead of upload',     type: :boolean, short: 'p', default: false
   opt :multipart,       'Multipart upload each file', type: :boolean, short: 'm', default: false
   opt :download,        'Download a linked file',     type: :string,  short: 'd'
+  opt :save_as,         'Save downloaded file as',    type: :string,  short: 's'
 end
 
 raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
@@ -134,7 +143,7 @@ elsif opts[:multipart] #upload multiple individual binary files
 elsif opts[:download] #download a linked file
   uri  = URI(opts[:download])
   file = uri.path.split('/')[3] # 0 is always empty, 1 is always 'files', 2 is always username
-  dst  = slack.download({file: file})
+  dst  = slack.download({file: file}, opts[:save_as])
   puts "File downloaded to #{dst}"
 else #upload concatenated text snippet
   slack.upload(params.merge(content: ARGF.read))
