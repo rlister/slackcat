@@ -37,6 +37,8 @@ derivatives, you need to install the `ruby-dev` package.
   --initial-comment, -i <s>:   Initial comment to add
                  --post, -p:   Post instead of upload
             --multipart, -m:   Multipart upload each file
+         --download, -d <s>:   Download a linked file
+          --save-as, -s <s>:   Save downloaded file as
                  --help, -h:   Show this message
 ```
 
