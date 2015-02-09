@@ -63,6 +63,31 @@ class Slackcat
     end
   end
 
+  ## download a file posted by another user
+  def download(params, save_as)
+    info = self.class.get('/files.info', query: params.merge({token: @token})).tap do |response|
+      raise "error retrieving information for for file #{params[:file]}: #{response.fetch('error', 'unknown error')}" unless response['ok']
+    end.fetch('file')
+
+    if download = info['url']
+      uri  = URI(download)
+      name = uri.path.split('/').last
+
+      if save_as
+        if File.directory?(save_as)
+          name = "#{save_as}/#{name}"
+        else
+          name = save_as
+        end
+      end
+
+      File.open(name, 'wb') { |f| f.write HTTParty.get(download).parsed_response }
+      return name
+    else
+      raise "error determining private download URL for file #{params[:file]}"
+    end
+  end
+
 end
 
 opts = Trollop::options do
@@ -76,6 +101,8 @@ opts = Trollop::options do
   opt :initial_comment, 'Initial comment to add',     type: :string,  short: 'i'
   opt :post,            'Post instead of upload',     type: :boolean, short: 'p', default: false
   opt :multipart,       'Multipart upload each file', type: :boolean, short: 'm', default: false
+  opt :download,        'Download a linked file',     type: :string,  short: 'd'
+  opt :save_as,         'Save downloaded file as',    type: :string,  short: 's'
 end
 
 raise 'set slack API token using SLACK_TOKEN or -k option' unless opts[:token]
@@ -113,6 +140,11 @@ elsif opts[:multipart] #upload multiple individual binary files
   ARGV.each do |arg|
     slack.upload({file: File.new(arg), filename: arg}.merge(params))
   end
+elsif opts[:download] #download a linked file
+  uri  = URI(opts[:download])
+  file = uri.path.split('/')[3] # 0 is always empty, 1 is always 'files', 2 is always username
+  dst  = slack.download({file: file}, opts[:save_as])
+  puts "File downloaded to #{dst}"
 else #upload concatenated text snippet
   slack.upload(params.merge(content: ARGF.read))
 end
