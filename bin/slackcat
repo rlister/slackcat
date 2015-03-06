@@ -135,7 +135,7 @@ params = {
 }.select { |_, value| value }
 
 if opts[:post] #simple text post
-  slack.post_message(text: ARGF.read, channel: params[:channels], username: slack.auth)
+  slack.post_message(text: ARGF.read, channel: params[:channels], as_user: true)
 elsif opts[:multipart] #upload multiple individual binary files
   ARGV.each do |arg|
     slack.upload({file: File.new(arg), filename: arg}.merge(params))
