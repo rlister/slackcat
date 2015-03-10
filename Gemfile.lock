@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    slackcat (0.2.2)
+    slackcat (0.2.5)
       httmultiparty
       trollop
 
@@ -15,12 +15,12 @@ GEM
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    json (1.8.1)
+    json (1.8.2)
     mimemagic (0.2.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     rake (10.3.2)
-    trollop (2.0)
+    trollop (2.1.1)
 
 PLATFORMS
   ruby
