@@ -138,7 +138,8 @@ if opts[:post] #simple text post
   slack.post_message(text: ARGF.read, channel: params[:channels], as_user: true)
 elsif opts[:multipart] #upload multiple individual binary files
   ARGV.each do |arg|
-    slack.upload({file: File.new(arg), filename: arg}.merge(params))
+    response = slack.upload({file: File.new(arg), filename: arg}.merge(params))
+    puts response['file']['url']
   end
 elsif opts[:download] #download a linked file
   uri  = URI(opts[:download])
