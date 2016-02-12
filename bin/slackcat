@@ -139,7 +139,11 @@ if opts[:post] #simple text post
 elsif opts[:multipart] #upload multiple individual binary files
   ARGV.each do |arg|
     response = slack.upload({file: File.new(arg), filename: arg}.merge(params))
-    puts response['file']['url']
+    file_scope = response['file']
+    private_uri = URI.parse(file_scope['url_private'])
+    secret_key = file_scope['permalink_public'].split('-').last #pull key param from public URL
+    private_uri.query = "pub_secret=#{secret_key}"
+    puts private_uri.to_s
   end
 elsif opts[:download] #download a linked file
   uri  = URI(opts[:download])
