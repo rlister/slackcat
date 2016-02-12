@@ -69,7 +69,7 @@ class Slackcat
       raise "error retrieving information for for file #{params[:file]}: #{response.fetch('error', 'unknown error')}" unless response['ok']
     end.fetch('file')
 
-    if download = info['url']
+    if download = info['url_private']
       uri  = URI(download)
       name = uri.path.split('/').last
 
